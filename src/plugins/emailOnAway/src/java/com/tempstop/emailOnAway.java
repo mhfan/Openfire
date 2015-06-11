@@ -1,5 +1,7 @@
 package com.tempstop;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jivesoftware.openfire.MessageRouter;
 import org.jivesoftware.openfire.session.Session;
 import org.jivesoftware.openfire.XMPPServer;
@@ -24,6 +26,7 @@ import org.xmpp.packet.Packet;
 import java.io.*;
 
 public class emailOnAway implements Plugin, PacketInterceptor {
+    private static Logger log = LoggerFactory.getLogger(emailOnAway.class);
 
     private InterceptorManager interceptorManager;
     private UserManager userManager;
@@ -55,8 +58,8 @@ public class emailOnAway implements Plugin, PacketInterceptor {
         Message message = new Message();
         message.setTo(to);
         message.setFrom(from);
-        message.setSubject("I'm away");
-        message.setBody("I'm currently away.  Your message has been forwarded to my service email address ("+emailTo+").");
+        message.setSubject("I'm unavailable");
+        message.setBody("I'm currently unavailable.  Message forwarded to email: " + emailTo);
         return message;
     }
 
@@ -66,8 +69,7 @@ public class emailOnAway implements Plugin, PacketInterceptor {
 	String emailTo = null;
 	String emailFrom = null;
 
-	if((!processed) && 
-	    (!read) && 
+	if((!processed) && (read) &&
 	    (packet instanceof Message) && 
 	    (packet.getTo() != null)) { 
 
@@ -76,7 +78,11 @@ public class emailOnAway implements Plugin, PacketInterceptor {
 	    if(msg.getType() == Message.Type.chat) {
 		try {
 		    User userTo = userManager.getUser(packet.getTo().getNode());
-		    if(presenceManager.getPresence(userTo).toString().toLowerCase().indexOf("away") != -1) {
+		    Presence presence = presenceManager.getPresence(userTo);
+		    //log.debug("presence: " + (presence == null ? "null" : presence.toString()));
+		    if(presence == null// || presence.getType() == null ||
+			//presence.getType() == Presence.Type.unavailable ||
+			/*presence.toString().toLowerCase().indexOf("away") != -1*/) {
 			// Status isn't away
 			if(msg.getBody() != null) {
 			    // Build email/sms
@@ -111,7 +117,7 @@ public class emailOnAway implements Plugin, PacketInterceptor {
 				emailTo, 
 				userFrom.getName(), 
 				emailFrom,
-				"IM",
+				"New XMPP instant message",
 				msg.getBody(), 
 				null);
 				
