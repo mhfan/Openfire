@@ -271,7 +271,7 @@
      <%
         list = buildDir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                return name.endsWith(".tar.gz");
+                return name.endsWith(".tar.gz") || name.endsWith(".deb");
             }
         });
         if (list != null && list.length > 0) {

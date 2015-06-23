@@ -40,7 +40,7 @@
             else if (clientFile.getName().endsWith(".dmg")) {
                 macClientExists = true;
             }
-            else if(clientFile.getName().endsWith(".tar.gz")){
+            else if(clientFile.getName().endsWith(".tar.gz") || clientFile.getName().endsWith(".deb")){
                 linuxClientExists = true;
             }
         }

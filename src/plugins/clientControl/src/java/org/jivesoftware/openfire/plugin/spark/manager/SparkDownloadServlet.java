@@ -79,7 +79,7 @@ public class SparkDownloadServlet extends HttpServlet {
                 else if (clientFile.getName().endsWith(".dmg") && "mac".equals(os)) {
                     fileList.add(clientFile.getName());
                 }
-                else if(clientFile.getName().endsWith(".tar.gz") && "linux".equals(os)){
+                else if((clientFile.getName().endsWith(".tar.gz") || clientFile.getName().endsWith(".deb")) && "linux".equals(os)){
                     fileList.add(clientFile.getName());
                 }
             }
